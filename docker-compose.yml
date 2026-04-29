@@ -1,0 +1,69 @@
+version: '3.8'
+
+networks:
+  goodeva_net:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: goodeva_db
+    networks:
+      - goodeva_net
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpassword
+      POSTGRES_DB: goodeva_db
+    ports:
+      - "5432:5432" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d goodeva_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: goodeva_backend
+    networks:
+      - goodeva_net
+    environment:
+      - DATABASE_URL=postgresql://admin:adminpassword@db:5432/goodeva_db
+      - SECRET_KEY=my_super_secret_jwt_key_123
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app/backend
+      - ./ml:/app/ml
+      - ./data:/app/data 
+    command: sh -c "alembic upgrade head && uvicorn app:app --host 0.0.0.0 --port 8000 --reload"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: goodeva_frontend
+    networks:
+      - goodeva_net
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+      - WATCHPACK_POLLING=true 
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src:/app/src                     
+      - ./frontend/public:/app/public               
+    stdin_open: true 
+    tty: true
+
+volumes:
+  postgres_data:
