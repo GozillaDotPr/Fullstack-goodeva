@@ -36,8 +36,8 @@ const Sidebar = () => {
   const isMobile = useIsMobile();
 
   const isOpenRaw = useStore(useSidebarStore, (state) => state.isOpen);
-  const isOpen = isOpenRaw ?? false; 
-  const toggle = useSidebarStore((state) => state.toggle); 
+  const isOpen = isOpenRaw ?? false;
+  const toggle = useSidebarStore((state) => state.toggle);
 
   const drawerWidthOpen = 240;
   const drawerWidthClose = 65;
@@ -84,9 +84,9 @@ const Sidebar = () => {
                 <ListItemIcon sx={{ color: isActive ? theme.palette.primary.main : theme.palette.text.secondary }}>
                   <Icon size={20} />
                 </ListItemIcon>
-                <ListItemText 
-                  primary={item.text} 
-                  sx={{ opacity: isMobile ? 1 : (isOpen ? 1 : 0) }} 
+                <ListItemText
+                  primary={item.text}
+                  sx={{ opacity: isMobile ? 1 : (isOpen ? 1 : 0) }}
                 />
               </ListItemButton>
             </ListItem>
@@ -94,7 +94,7 @@ const Sidebar = () => {
         })}
       </List>
       <Divider />
-      
+
     </Drawer>
   );
 };
