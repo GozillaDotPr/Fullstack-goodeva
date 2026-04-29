@@ -7,6 +7,7 @@ import os
 # import Base dan model
 from database import Base
 from models.sales_model import Sales
+from models.users_model import Users
 
 config = context.config
 

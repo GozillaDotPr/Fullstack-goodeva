@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy.dialects.postgresql import insert
 from database import SessionLocal
 from models.sales_model import Sales
+from models.users_model import Users
+import base64
 
 def seed_sales_from_csv():
     db = SessionLocal()
@@ -55,3 +57,40 @@ def seed_sales_from_csv():
         return {"success": False, "error": str(e)}
     finally:
         db.close()
+
+def seed_user():
+    db = SessionLocal()
+    try:
+        
+        user = Users(
+            username="admin",
+            email="admin@app.com",
+            password=base64.b64encode(b"admin").decode("utf-8")
+        )
+
+        db.add(user)
+        db.commit()
+
+        return {
+            "success": True, 
+            "message": f"Berhasil memproses seed user"
+        }
+        
+    except Exception as e:
+        db.rollback()
+        return {"success": False, "error": str(e)}
+    finally:
+        db.close()
+
+def do_seed():
+    csv = seed_sales_from_csv()
+    user = seed_user()
+
+    return {
+        "success": True, 
+        "message": "Seed process completed",
+        "data": {
+            "csv": csv,
+            "user": user
+        }
+    }

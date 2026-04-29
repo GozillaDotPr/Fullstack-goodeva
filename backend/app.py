@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from sqlalchemy import text
 from database import engine, SessionLocal
-from seed import seed_sales_from_csv
+from seed import do_seed
 import os
 
 from repository.sales_repo import SalesRepository
@@ -53,7 +53,7 @@ def create_app():
             print("Database connected successfully")
 
             if sales_service.checkSeedIsValid():
-                result = seed_sales_from_csv()
+                result = do_seed()
                 print(f"Seed result: {result}")
             else:
                 print("Seed already exists")
