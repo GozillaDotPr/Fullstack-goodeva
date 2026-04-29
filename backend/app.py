@@ -2,6 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from sqlalchemy import text
+from database import engine
+
 import os
 
 from routes.sales_route import router as sales_router
@@ -23,7 +26,7 @@ def create_app():
         allow_headers=["*"],
     )
 
-    app.include_router(sales_router)
+    app.include_router(sales_router,prefix="/api/v1")
 
     @app.get("/")
     def root():
@@ -31,6 +34,18 @@ def create_app():
             "success": True,
             "message": "API is running"
         }
+
+    @app.on_event("startup")
+    async def startup():
+        try:
+            with engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
+
+            print("Database connected successfully")
+
+        except Exception as e:
+            print(f"Database connection failed: {e}")
+            raise e 
 
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
