@@ -14,11 +14,11 @@ class SalesHandler:
             message="Sales data retrieved successfully",
             status_code=200
         )
-        
+
     def prediksi(self, jumlah_penjualan: int, harga: int, diskon: int):
         if not self.service.is_model_ready():
             return errorRespone(
-                message="Model ML tidak tersedia, tidak bisa memprediksi.",
+                message="Something Error Please Contact Admin or try again later",
                 status_code=503
             )
         

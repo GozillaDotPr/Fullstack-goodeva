@@ -1,3 +1,5 @@
 backend/.env
 ml/model
-.env
+frontend/.env
+frontend/.next
+frontend/node_modules

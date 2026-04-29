@@ -20,7 +20,6 @@ class PrediksiInput(BaseModel):
 @router.get("/")
 def get_sales(
     handler: SalesHandler = Depends(get_sales_handler),
-    payload = Depends(require_jwt)
 ):
     return handler.get_all_sales()
 

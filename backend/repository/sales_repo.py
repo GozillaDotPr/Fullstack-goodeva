@@ -7,7 +7,7 @@ class SalesRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def get_all(self, skip: int = 0, limit: int = 100) -> List[Sales]:
+    def get_all(self, skip: int = 0, limit: int = 10) -> List[Sales]:
         return self.db.query(Sales).offset(skip).limit(limit).all()
 
     def get_by_id(self, sales_id: int) -> Optional[Sales]:
