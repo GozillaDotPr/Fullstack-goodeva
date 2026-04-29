@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from dependencies import get_sales_handler
+
 from handlers.sales_handler import SalesHandler
 from fastapi import Depends
 
+from dependencies import get_sales_handler
 router = APIRouter(
     prefix="/sales",
     tags=["Sales"]
