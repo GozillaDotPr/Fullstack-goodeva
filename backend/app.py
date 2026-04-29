@@ -3,15 +3,24 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from sqlalchemy import text
-from database import engine
-
+from database import engine, SessionLocal
+from seed import seed_sales_from_csv
 import os
+
+from repository.sales_repo import SalesRepository
+from services.sales_service import SalesService
+
 
 from routes.sales_route import router as sales_router
 
 load_dotenv()
 
 def create_app():
+    # init services repo hand handler
+    db = SessionLocal()
+    sales_repo = SalesRepository(db)
+    sales_service = SalesService(sales_repo)
+
     app = FastAPI(
         title="Mini AI Sales Prediction API",
         description="API for managing sales data and predicting product sales status",
@@ -42,6 +51,12 @@ def create_app():
                 connection.execute(text("SELECT 1"))
 
             print("Database connected successfully")
+
+            if sales_service.checkSeedIsValid():
+                result = seed_sales_from_csv()
+                print(f"Seed result: {result}")
+            else:
+                print("Seed already exists")
 
         except Exception as e:
             print(f"Database connection failed: {e}")
