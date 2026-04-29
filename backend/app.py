@@ -12,6 +12,7 @@ from services.sales_service import SalesService
 
 
 from routes.sales_route import router as sales_router
+from routes.auth import router as auth_router
 
 load_dotenv()
 
@@ -36,6 +37,8 @@ def create_app():
     )
 
     app.include_router(sales_router,prefix="/api/v1")
+    app.include_router(auth_router,prefix="/api/v1")
+
 
     @app.get("/")
     def root():
